@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil de l'utilisateur {{user.username}}{% endblock %}
+
+{% block body %}
+<div class="row justify-content-center">
+    <div class="col-12 col-sm-11 col-md-10 col-lg-9">
+    {% if app.user %}
+        {% for message in app.flashes('success')%}
+        <div class="alert alert-instantmessage">
+            {{message}}
+        </div>
+        {% endfor %}
+        <div class="user-card">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <h1 id="username">{{user.username}}</h1>
+                </div>
+                <div class="col text-center">
+                    {% if user.profile.image.name is not null %}
+                        <img src="{{ asset(vich_uploader_asset(user.profile, 'imageFile')) }}" class="profil-picture" alt="">
+                    {% elseif user.profile.fixturesImageName is not null %}
+                        <img src="{{asset('images/fixtures/users/' ~ user.profile.fixturesImageName  )}}"  class="profil-picture" alt="">
+                    {% else %}
+                        <img src="{{ asset('images/profil-picture-illustration.png') }}" class="profil-picture" alt="">
+                {% endif %}
+                </div>
+                <div class="col-6">
+                    {% if user.profile.firstName is not null %}
+                        <h6><strong>Prénom : </strong>{{user.profile.firstName}}</h6>
+                    {% endif %}
+                    {% if user.profile.lastName is not null %}
+                        <h6><strong>Nom : </strong>{{user.profile.lastName}}</h6>
+                    {% endif %}
+                    {% if user.profile.age is not null %}
+                        <h6><strong>Age : </strong>{{user.profile.age}} ans</h6>
+                    {% endif %}
+                    {% if user.profile.job is not null %}
+                        <h6><strong>Profession : </strong>{{user.profile.job}}</h6>
+                    {% endif %}
+                    {% if user.profile.address is not null %}
+                        <h6><strong>Adresse : </strong>{{user.profile.address}}</h6>
+                    {% endif %}
+                    {% if user.profile.zipcode is not null %}
+                        <h6><strong>Code postal : </strong>{{user.profile.zipcode}}</h6>
+                    {% endif %}
+                    {% if user.profile.city is not null %}
+                        <h6><strong>Ville : </strong>{{user.profile.city}}</h6>
+                    {% endif %}
+                    {% if user.profile.country is not null %}
+                        <h6><strong>Pays : </strong>{{user.profile.country|country_name('fr')}}</h6>
+                    {% endif %}
+                    {% if user.profile.language is not null %}
+                        <h6><strong>Langue : </strong>{{user.profile.language}}</h6>
+                    {% endif %}
+                </div>
+                <div class="col-12">
+                    {% if user.profile.description is not null %}
+                        <h6 class="bio">"{{user.profile.description}}"</h6>
+                    {% endif %}
+                </div>
+                {% if app.user.id == user.id %}
+                        <form method="POST" class="col-12" action="{{path('app_user_delete',{'id':user.id})}}" onsubmit="return confirm('Voulez-vous vraiment supprimer votre profil ?')">
+                            <input type="hidden" name="_method" value="delete">
+                            <input type="hidden" name="_token" value="{{csrf_token('delete' ~ user.id)}}">
+                            <input type="submit" class="btn btn-delete btn-instantmessage" value="Supprimer mon compte">
+                        </form>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+    <p class="alert-instantmessage">Bienvenue sur InstantMessage.fr ! Pour profiter de toutes les fonctionnalités, veuillez vous inscrire ou vous connecter</p>
+    {% endif %}
+    </div>
+</div>
+{% endblock %}
